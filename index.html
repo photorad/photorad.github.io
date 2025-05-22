@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoRad: Radiation Modeling for Urban Greening</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: #e8491d 3px solid;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        nav {
+            background: #4a5c68;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+        nav a:hover {
+            background: #e8491d;
+        }
+        section {
+            padding: 20px 0;
+            border-bottom: 1px #ddd dotted;
+        }
+        section:last-child {
+            border-bottom: none;
+        }
+        h2 {
+            color: #35424a;
+            border-bottom: 2px solid #e8491d;
+            padding-bottom: 5px;
+        }
+        .image-placeholder {
+            max-width: 100%; /* Ensures image is responsive and doesn't overflow */
+            height: auto;    /* Maintains aspect ratio */
+            border: 1px solid #ccc;
+            margin-top: 15px;
+            margin-bottom: 5px; /* Reduced bottom margin before caption */
+            display: block;  /* Makes margin auto work for centering */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .image-caption {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 0px; /* Adjust if needed */
+            margin-bottom: 15px;
+        }
+        ul {
+            list-style: disc;
+            padding-left: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #35424a;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+        .publication-list li {
+            margin-bottom: 10px;
+        }
+        .authors {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>PhotoRad: Radiation Modeling for Urban Greening</h1>
+        <p>Enhancing Plant Selection in Complex Urban Microclimates</p>
+    </header>
+
+    <nav>
+        <a href="#introduction">Introduction</a>
+        <a href="#challenge">The Challenge</a>
+        <a href="#methodology">Methodology</a>
+        <a href="#applications">Applications</a>
+        <a href="#publications">Publications</a>
+    </nav>
+
+    <div class="container">
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Urban greening is a widely acknowledged strategy for improving outdoor thermal comfort, mitigating the Urban Heat Island (UHI) effect, enhancing air quality, and improving the overall quality of life in cities. Vegetation, whether in the form of trees, turfgrass, or food crops, plays a crucial role. However, the success of urban greening initiatives heavily depends on the appropriate selection and placement of plant species, considering the complex microclimatic conditions prevalent in urban environments.</p>
+            <p>A critical factor for plant growth is the availability of an adequate amount of solar radiation, specifically Photosynthetically Active Radiation (PAR). While factors like moisture and soil nutrients can often be supplemented, light availability is largely determined by the urban topology, including building heights, street canyons, and shading profiles. This research focuses on developing and refining a radiation modeling strategy to inform plant selection for urban greening by accurately estimating PAR and its derivative, the Daily Light Integral (DLI).</p>
+        </section>
+
+        <section id="challenge">
+            <h2>The Challenge in Urban Greening</h2>
+            <p>Traditional approaches to plant selection often rely on empirical measurements or general guidelines that may not capture the nuanced light availability within specific urban micro-locations. Existing urban simulation tools, while incorporating vegetation, rarely provide definitive guidance on the feasibility of growing and maintaining specific plant species.</p>
+            <p>Key challenges include:</p>
+            <ul>
+                <li><strong>Microclimate Variability:</strong> Solar radiation can vary significantly even within a small urban area due to complex shading patterns from buildings and other structures.</li>
+                <li><strong>Spectral Accuracy:</strong> Early methods for estimating PAR often relied on converting visible light (illuminance, measured in lux) to PAR. However, the human eye's sensitivity (photopic curve) differs significantly from the spectral response of photosynthesis, leading to potential inaccuracies.</li>
+                <li><strong>Data Integration:</strong> Effectively combining climatic data, urban geometry, material properties, and plant-specific light requirements into a coherent decision-support framework is complex.</li>
+            </ul>
+            <img src="assets/images/ecaade_fig1_vlambda_par_response.png" alt="Comparison of Human Eye Photopic Luminous Efficiency V(λ) and Ideal Relative PAR Response" class="image-placeholder" style="width: 30%;">
+            <!-- eCAADe 2022, Figure 1: The human photopic luminous efficiency function V(λ) and the ideal relative PAR response -->
+            <p class="image-caption">Figure 1: The human eye's spectral sensitivity (V(λ)) peaks in green, while PAR covers a broader range crucial for photosynthesis. Approximating PAR from illuminance can be inaccurate.</p>
+        </section>
+
+        <section id="methodology">
+            <h2>Our Approach: The PhotoRad Methodology</h2>
+            <p>This research proposes a simulation-based methodology to generate annual estimates of PAR in outdoor urban spaces, leading to more informed plant selection. The core of the methodology involves:</p>
+
+            <h3>1. Foundational Concepts: PAR and DLI</h3>
+            <p>Photosynthetically Active Radiation (PAR) is the portion of the solar spectrum (typically 400-700nm) that plants use for photosynthesis. It is often quantified as Photosynthetic Photon Flux Density (PPFD), measured in micromoles per second per square meter (µmol·m⁻²·s⁻¹). The Daily Light Integral (DLI) is the cumulative PPFD received over a 24-hour period (mol·m⁻²·day⁻¹), a critical metric for assessing plant growth potential.</p>
+
+            <img src="assets/images/simaud_fig1_us_dli_map.png" alt="Annual DLI map for mainland United States" class="image-placeholder" style="width: 35%;">
+            <!-- SimAUD 2020, Figure 1: The annual DLI map for mainland United States -->
+            <p class="image-caption">Figure 2: Example of a macro-scale DLI map for the mainland United States (Credit: Korczynski et al., 2002, as shown in SimAUD 2020).</p>
+
+            <h3>2. Radiation Modeling Strategy</h3>
+            <p>The methodology employs advanced radiation modeling techniques, primarily using the Radiance raytracing system, to calculate incident solar radiation on user-defined analysis grids within an urban model.</p>
+            <ul>
+                <li><strong>Climate Data:</strong> Typical Meteorological Year (TMY) weather files provide hourly solar radiation data (direct normal and diffuse horizontal) and other relevant climatic parameters.</li>
+                <li><strong>Urban Context Modeling:</strong> 3D CAD models represent the urban geometry, including buildings and terrain. Material properties (reflectivity, transmissivity) are assigned to surfaces.</li>
+                <li><strong>Hourly Irradiance Calculation:</strong> The Daylight Coefficient Method (or similar finite-element approaches) is used within Radiance to efficiently calculate hourly incident solar irradiance (W/m²) on analysis points, considering shading and inter-reflections.</li>
+            </ul>
+
+            <h3>3. Advanced PAR/PPFD Calculation</h3>
+            <p>A key innovation is the move towards more spectrally accurate PAR calculations:</p>
+            <ul>
+                <li><strong>Early Approach (Illuminance-based):</strong> Initial strategies involved calculating illuminance (lux) and converting it to PPFD using generalized factors. While useful, this has spectral limitations.</li>
+                <li><strong>Spectrally Weighted Raytracing (Direct Irradiance-based):</strong> The refined methodology calculates PPFD directly from incident solar irradiance. This involves:
+                    <ol>
+                        <li>Using a standard solar spectrum (e.g., CIE D65 illuminant).</li>
+                        <li>Calculating the fraction of spectral power for each wavelength within the PAR range (400-700nm).</li>
+                        <li>Converting the irradiance at each wavelength to PPFD using fundamental physical constants (Avogadro's constant, Planck's constant, speed of light).</li>
+                        <li>Integrating these wavelength-specific PPFD values to obtain the total PPFD. This approach more accurately accounts for the energy available for photosynthesis.</li>
+                    </ol>
+                </li>
+            </ul>
+            <img src="assets/images/ecaade_fig2_irradiance_to_dli_schematic.png" alt="Schematic of calculating PPFD and DLI from irradiance data" class="image-placeholder" style="width: 50%;">
+            <!-- eCAADe 2022, Figure 2: Schematic of the computational process of calculating PPFD and mapping DLI from irradiance data -->
+            <p class="image-caption">Figure 3: Schematic illustrating the process of converting simulated irradiance to PPFD and subsequently to DLI maps, considering spectral properties.</p>
+
+            <h3>4. Automated Workflow and Plant Selection</h3>
+            <p>An automated workflow, developed as a "PhotoRad" plugin for Rhino/Grasshopper, facilitates the process:</p>
+            <ul>
+                <li><strong>Location-Specific Data:</strong> Extracts geographical data, hardiness zones (e.g., USDA Plant Hardiness Zones), and average monthly photoperiods from weather data and relevant databases.</li>
+                <li><strong>DLI Mapping:</strong> Generates hourly, daily, monthly, seasonal, or annual average DLI maps for the specified urban analysis surfaces.</li>
+                <li><strong>Plant Database:</strong> Cross-references the calculated DLI values, hardiness zones, and photoperiods against a database of plant requirements (DLI ranges, hardiness tolerance, growing seasons).</li>
+                <li><strong>Suitability Analysis:</strong> Provides a visual and report-based output indicating the suitability of selected plant cultivars for specific locations within the urban model.</li>
+            </ul>
+            <img src="assets/images/ibpc_fig2_workflow_schematic.png" alt="Schematic outline of the automated tool development" class="image-placeholder" style="width: 55%;">
+            <!-- IBPC 2021, Figure 2: Schematic outline of the tool development -->
+            <p class="image-caption">Figure 4: An overview of the automated workflow, from input data to plant growth qualification reports.</p>
+        </section>
+
+        <section id="applications">
+            <h2>Applications and Case Studies</h2>
+            <p>The methodology has been applied and tested in various urban contexts:</p>
+            <ul>
+                <li><strong>Dallas, Texas (SimAUD 2020):</strong> Focused on guiding the selection of specific turfgrass types for an urban neighborhood by mapping DLI. This study highlighted seasonal variations in DLI and their impact on grass suitability on roofs versus ground level.</li>
+                 <img src="assets/images/simaud_fig7_dallas_dli_monthly.png" alt="Monthly average DLI map for Dallas case study" class="image-placeholder" style="width: 50%;">
+                 <!-- SimAUD 2020, Figure 7: The monthly average DLI map for the Typical Meteorological Year. -->
+                 <p class="image-caption">Figure 5: Monthly average DLI maps for a prototypical urban area in Dallas, TX, illustrating seasonal light availability changes.</p>
+
+                <li><strong>Houston, Texas (IBPC 2021):</strong> Demonstrated the automated "PhotoRad" workflow in a dense urban patio setting. It showcased the integration of hardiness zone data and photoperiod analysis alongside DLI for selecting among Adiantum aleuticum, Cyclamen cilicium, and Lycopersicon esculentum.</li>
+                <img src="assets/images/ibpc_fig4c_houston_plant_selection_map.png" alt="Plant selection map for Houston case study" class="image-placeholder" style="width: 40%;">
+                <!-- IBPC 2021, Figure 4c: Plants' selection maps from Houston case study -->
+                <p class="image-caption">Figure 6: Plant suitability map for a Houston patio, indicating areas suitable for different species based on DLI and hardiness.</p>
+
+                <li><strong>Six U.S. Cities (eCAADe 2022):</strong> Applied the spectrally weighted PPFD calculation method to model DLI in six cities with varying latitudes and cloudiness (Seattle, Fargo, Denver, Pittsburgh, Phoenix, Birmingham). This study emphasized the importance of considering location-specific growing seasons and demonstrated how the refined PAR calculation impacts plant feasibility assessments.</li>
+                 <img src="assets/images/ecaade_fig7_6city_plant_selection.png" alt="Plant selection based on growing season DLI for six US cities" class="image-placeholder" style="width: 55%;">
+                 <!-- eCAADe 2022, Figure 7 (right panel for Test 2): Plant selection based on growing season DLI -->
+                 <p class="image-caption">Figure 7: Comparative plant selection maps for six U.S. cities, considering DLI availability during their respective growing seasons.</p>
+            </ul>
+            <p>These studies demonstrate the capability of the PhotoRad methodology to provide detailed, site-specific light availability data, enabling urban planners, landscape architects, and urban farmers to make more informed decisions about vegetation selection. The approach contributes to more resilient and successful urban greening projects.</p>
+        </section>
+
+        <section id="key-benefits">
+            <h2>Key Benefits</h2>
+            <ul>
+                <li><strong>Improved Accuracy:</strong> Offers more precise PAR and DLI estimates compared to methods relying solely on illuminance conversions, especially with the spectrally weighted approach.</li>
+                <li><strong>Site-Specificity:</strong> Accounts for detailed urban geometry and microclimatic variations in light availability.</li>
+                <li><strong>Informed Decision-Making:</strong> Provides actionable data to guide the selection of suitable plant species, reducing the risk of plant failure.</li>
+                <li><strong>Automation:</strong> The "PhotoRad" workflow streamlines the analysis process, making sophisticated radiation modeling more accessible.</li>
+                <li><strong>Flexibility:</strong> Can be adapted for various urban greening scenarios, including ground-level planting, green roofs, and vertical farms.</li>
+            </ul>
+        </section>
+
+        <section id="limitations">
+            <h2>Limitations and Future Work</h2>
+            <p>While this methodology offers significant advancements, certain limitations exist:</p>
+            <ul>
+                <li>Reliance on TMY data, which represents typical rather than real-time weather conditions.</li>
+                <li>The Daylight Coefficient method involves some simplifications regarding sky radiance distribution.</li>
+                <li>The availability of comprehensive DLI requirement data for a wide range of plant species can be a constraint.</li>
+                <li>Dynamic effects of plant growth (self-shading, changes in canopy density over time) are not currently modeled.</li>
+            </ul>
+            <p>Future work includes further validation of the DLI calculations with field measurements, expanding the plant database, and exploring the integration of dynamic plant growth models. The potential to extend the spectral analysis to other artificial light sources for indoor farming applications is also being considered.</p>
+        </section>
+
+        <section id="publications">
+            <h2>Relevant Publications</h2>
+            <ul class="publication-list">
+                <li>
+                    <span class="authors">Kyropoulou, M., Subramaniam, S., Tobin, M. F., & Hoffmann, S.</span> (2022). Modeling Photosynthetically Active Radiation Using a Spectrally Weighted Raytracing Approach. In M. J. Rodrigues, & P. L. M. R. Sousa (Eds.), <i>Digital Design Reconsidered - Proceedings of the 40th Conference on Education and Research in Computer Aided Architectural Design in Europe (eCAADe 2022)</i> (Vol. 2, pp. 239-248). eCAADe.
+                </li>
+                <li>
+                    <span class="authors">Kyropoulou, M., Subramaniam, S., & Hoffmann, S.</span> (2021). An automated workflow for informing urban greening based on photosynthetic radiation modelling. <i>Journal of Physics: Conference Series, 2069</i> (8th International Building Physics Conference IBPC 2021), 012060. IOP Publishing.
+                </li>
+                <li>
+                    <span class="authors">Subramaniam, S., Kyropoulou, M., & Hoffmann, S.</span> (2020). Radiation Modeling Strategy for Incorporating Vegetation in Urban Microclimate Simulations. In <i>Proceedings of the Symposium on Simulation in Architecture + Urban Design (SimAUD 2020)</i> (pp. 379-386). Society for Modeling & Simulation International (SCS).
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2024 PhotoRad </p>
+    </footer>
+</body>
+</html>
