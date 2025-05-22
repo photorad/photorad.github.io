@@ -59,20 +59,25 @@
             padding-bottom: 5px;
         }
         .image-placeholder {
-            max-width: 100%; /* Ensures image is responsive and doesn't overflow */
-            height: auto;    /* Maintains aspect ratio */
+            max-width: 100%;
+            height: auto;
             border: 1px solid #ccc;
             margin-top: 15px;
-            margin-bottom: 5px; /* Reduced bottom margin before caption */
-            display: block;  /* Makes margin auto work for centering */
+            margin-bottom: 5px;
+            display: block;
             margin-left: auto;
             margin-right: auto;
+            cursor: pointer; /* Add cursor to indicate it's clickable */
+            transition: transform 0.2s ease-in-out; /* Optional: slight hover effect */
+        }
+        .image-placeholder:hover {
+            transform: scale(1.02); /* Optional: slight hover effect */
         }
         .image-caption {
             font-size: 0.9em;
             color: #555;
             text-align: center;
-            margin-top: 0px; /* Adjust if needed */
+            margin-top: 0px;
             margin-bottom: 15px;
         }
         ul {
@@ -92,6 +97,54 @@
         .authors {
             font-style: italic;
             margin-bottom: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            padding-top: 50px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px; /* Max width of the image */
+            animation-name: zoom;
+            animation-duration: 0.4s;
+        }
+        @keyframes zoom {
+            from {transform:scale(0)}
+            to {transform:scale(1)}
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .close-modal:hover,
+        .close-modal:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* 100% Image Width on Smaller Screens */
+        @media only screen and (max-width: 700px){
+            .modal-content {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -240,8 +293,50 @@
         </section>
     </div>
 
+    <!-- The Modal HTML Structure -->
+    <div id="myModal" class="modal">
+      <span class="close-modal">×</span>
+      <img class="modal-content" id="img01">
+    </div>
+
     <footer>
         <p>© 2024 PhotoRad </p>
     </footer>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the image and insert it inside the modal - use its "alt" text as a caption
+        var modalImg = document.getElementById("img01");
+
+        // Get all images with class "image-placeholder"
+        var images = document.getElementsByClassName("image-placeholder");
+
+        // Loop through all images and add the click event
+        for (var i = 0; i < images.length; i++) {
+            images[i].onclick = function(){
+                modal.style.display = "block";
+                modalImg.src = this.src;
+                // If you want to use the alt text as a caption inside the modal, you'd add a caption element to the modal HTML
+                // and set its innerHTML here, e.g., captionText.innerHTML = this.alt;
+            }
+        }
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close-modal")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Optional: Close modal when clicking outside the image
+        modal.onclick = function(event) {
+            if (event.target == modal) { // Check if the click is on the modal background itself
+                modal.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>
